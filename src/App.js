@@ -1,6 +1,20 @@
 import React from 'react'
 import './App.css';
 
+const initialStories = [
+  {
+    title: 'React',
+    url: 'https://reactjs.org/', author: 'Jordan Walke', num_comments: 3,
+    points: 4,
+    objectID: 0,
+}, 
+{
+    title: 'Redux',
+    url: 'https://redux.js.org/', author: 'Dan Abramov, Andrew Clark', num_comments: 2,
+    points: 5,
+    objectID: 1,
+}, 
+];
 
 const useSemiPersistentState = (key, initialState) => {
   const [value, setValue] = React.useState(
@@ -14,26 +28,26 @@ const useSemiPersistentState = (key, initialState) => {
   return [value, setValue]
 }
 
+const getAsyncStories = () => new Promise(resolve => 
+  setTimeout(
+    () => resolve({ data: { stories: initialStories }}), 2000)
+  )
+
 const App = () => {
-  const initialStories = [
-    {
-      title: 'React',
-      url: 'https://reactjs.org/', author: 'Jordan Walke', num_comments: 3,
-      points: 4,
-      objectID: 0,
-  }, 
-  {
-      title: 'Redux',
-      url: 'https://redux.js.org/', author: 'Dan Abramov, Andrew Clark', num_comments: 2,
-      points: 5,
-      objectID: 1,
-  }, 
-];
-
-console.log("stories: ", initialStories);
-
 const [searchTerm, setSearchTerm] = useSemiPersistentState("Search", "React")
-const [stories, setStories] = React.useState(initialStories)
+const [stories, setStories] = React.useState([])
+const [isLoading, setIsLoading] = React.useState(false)
+const [isError, setIsError] = React.useState(false)
+
+React.useEffect(() => {
+  setIsLoading(true)
+
+  getAsyncStories().then(result => {
+    setStories(result.data.stories)
+    setIsLoading(false)
+  })
+  .catch(() => setIsError(true))
+}, [])
 
 const handleRemoveStory = item => {
   const newStories = stories.filter(story => item.objectID !== story.objectID)
@@ -52,7 +66,6 @@ const searchedStories = stories.filter(story => story.title.toLowerCase().includ
       <Title />
       <InputWithLabel 
         id="search"
-        // label="Search"
         value={searchTerm}
         isFocused
         onInputChange={handleSearch}
@@ -60,7 +73,15 @@ const searchedStories = stories.filter(story => story.title.toLowerCase().includ
         <strong>Search</strong>
       </InputWithLabel>
       <hr />
-      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+
+      {isError && <p>Something went wrong...</p>}
+
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+      )}
+      
     </div>
   );
 }
