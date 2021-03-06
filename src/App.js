@@ -1,21 +1,6 @@
 import React from 'react'
 import './App.css';
 
-// const initialStories = [
-//   {
-//     title: 'React',
-//     url: 'https://reactjs.org/', author: 'Jordan Walke', num_comments: 3,
-//     points: 4,
-//     objectID: 0,
-// }, 
-// {
-//     title: 'Redux',
-//     url: 'https://redux.js.org/', author: 'Dan Abramov, Andrew Clark', num_comments: 2,
-//     points: 5,
-//     objectID: 1,
-// }, 
-// ];
-
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query="
 
 const useSemiPersistentState = (key, initialState) => {
@@ -29,11 +14,6 @@ const useSemiPersistentState = (key, initialState) => {
 
   return [value, setValue]
 }
-
-// const getAsyncStories = () => new Promise(resolve => 
-//   setTimeout(
-//     () => resolve({ data: { stories: initialStories }}), 2000)
-//   )
 
 const storiesReducer = (state, action) => {
   switch (action.type) {
@@ -69,7 +49,6 @@ const [isError, setIsError] = React.useState(false)
 React.useEffect(() => {
   if (!searchTerm) return
   dispatchStories({ type: "STORIES_FETCH_INIT" })
-  // setIsLoading(true)
 
   fetch(`${API_ENDPOINT}${searchTerm}`)
     .then(response => response.json())
@@ -79,16 +58,6 @@ React.useEffect(() => {
         payload: result.hits
       })
     }, searchTerm)
-
-  // getAsyncStories().then(result => {
-  //   dispatchStories({
-  //     type: "STORIES_FETCH_SUCCESS",
-  //     payload: result.data.stories
-  //   })
-  //   // setIsLoading(false)
-  // })
-  // getAsyncStories = () => new Promise((resolve, reject) => setTimeout(reject, 2000))
-  // .catch(() => setIsError(true))
   .catch(() => {
     dispatchStories({ type: "STORIES_FETCH_FAILURE" })
   })
