@@ -64,19 +64,6 @@ const handleFetchStories = React.useCallback(async () => {
   }
 }, [url])
 
-//   axios.get(url)
-//     .then(response => response.json())
-//     .then(result => {
-//       dispatchStories({
-//         type: "STORIES_FETCH_SUCCESS",
-//         payload: result.data.hits
-//       })
-//     }, searchTerm)
-//   .catch(() => {
-//     dispatchStories({ type: "STORIES_FETCH_FAILURE" })
-//   })
-// }, [url])
-
 React.useEffect(() => {
   handleFetchStories()
 }, [handleFetchStories])
