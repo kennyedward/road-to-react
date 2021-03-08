@@ -87,7 +87,7 @@ const handleSearchSubmit = event => {
 
 const searchedStories = stories.data.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
   return (
-    <div>
+    <div className="container">
       <Title />
 
       <SearchForm 
@@ -111,7 +111,7 @@ const searchedStories = stories.data.filter(story => story.title.toLowerCase().i
 
 const Title = () => {
   return (
-    <h1>Hacker Stories</h1>
+    <h1 className="headline-primary">Hacker Stories</h1>
   )
 }
 
@@ -124,15 +124,15 @@ const Item = ({ item, onRemoveItem }) => {
     onRemoveItem(item)
   }
   return (
-    <div>
-        <span>
+    <div className="item">
+        <span style={{ width: "40%" }}>
           <a href={item.url}>{item.title}</a>
         </span>
-        <span>{item.author}</span>
-        <span>{item.num_comments}</span>
-        <span>{item.points}</span>
-        <span>
-          <button type="button" onClick={handleRemoveItem}>
+        <span style={{ width: "30%" }}>{item.author}</span>
+        <span style={{ width: "10%" }}>{item.num_comments}</span>
+        <span style={{ width: "10%" }}>{item.points}</span>
+        <span style={{ width: "10%" }}>
+          <button type="button" onClick={handleRemoveItem} className="button button_small">
             Dismiss
           </button>
         </span>
@@ -151,7 +151,7 @@ const InputWithLabel = ({ id, label, value, type = "text", onInputChange, isFocu
 
   return (
     <>
-      <label htmlFor={id}>{children}</label>
+      <label htmlFor={id} className="label">{children}</label>
       &nbsp;
       <input
         ref={inputRef}
@@ -160,6 +160,7 @@ const InputWithLabel = ({ id, label, value, type = "text", onInputChange, isFocu
         value={value}
         autoFocus={isFocused}
         onChange={onInputChange}
+        className="input"
       />
     </>
   )
@@ -170,7 +171,7 @@ const SearchForm = ({
   onSearchInput,
   onSearchSubmit
 }) => (
-  <form onSubmit={onSearchSubmit}>
+  <form onSubmit={onSearchSubmit} className="search-form">
         <InputWithLabel 
           id="search"
           value={searchTerm}
@@ -184,6 +185,7 @@ const SearchForm = ({
           type="submit"
           disabled={!searchTerm}
           // onClick={handleSearchSubmit}
+          className="button button_large"
         >
           Submit
         </button>
