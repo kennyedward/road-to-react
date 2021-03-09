@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
-// import styles from './App.module.css';
 import styled from 'styled-components'
+import { ReactComponent as Check } from './check.svg'
 
 const StyledContainer = styled.div`
     height: 100vw;
@@ -49,6 +49,13 @@ const StyledButton =  styled.button`
     &:hover {
       background: #171212;
       color: #FFFFFF;
+
+      svg {
+        g {
+          fill: #FFFFFF;
+          stroke: #FFFFFF;
+        }
+      }
     }
 `
 
@@ -122,8 +129,6 @@ const storiesReducer = (state, action) => {
 const App = () => {
 const [searchTerm, setSearchTerm] = useSemiPersistentState("Search", "React")
 const [stories, dispatchStories] = React.useReducer(storiesReducer, { data: [], isLoading: false, isError: false})
-const [isLoading, setIsLoading] = React.useState(false)
-const [isError, setIsError] = React.useState(false)
 const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`)
 
 const handleFetchStories = React.useCallback(async () => {
@@ -162,10 +167,7 @@ const handleSearchSubmit = event => {
 
   event.preventDefault()
 }
-
-const searchedStories = stories.data.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
   return (
-    // <div className={styles.container}>
     <StyledContainer>
       <Title />
 
@@ -174,6 +176,7 @@ const searchedStories = stories.data.filter(story => story.title.toLowerCase().i
         onSearchInput={handleSearchInput}
         onSearchSubmit={handleSearchSubmit}
       />
+
       <hr />
 
       {stories.isError && <p>Something went wrong...</p>}
@@ -183,15 +186,12 @@ const searchedStories = stories.data.filter(story => story.title.toLowerCase().i
       ) : (
         <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
-      
-    {/* </div> */}
     </StyledContainer>
   );
 }
 
 const Title = () => {
   return (
-    // <h1 className={styles.headlinePrimary}>Hacker Stories</h1>
     <StyledHeadlinePrimary>Hacker Stories</StyledHeadlinePrimary>
   )
 }
@@ -205,38 +205,24 @@ const Item = ({ item, onRemoveItem }) => {
     onRemoveItem(item)
   }
   return (
-    // <div className={styles.item}>
     <StyledItem>
-        {/* <span style={{ width: "40%" }}> */}
         <StyledColumn width="40%">
           <a href={item.url}>{item.title}</a>
-        {/* </span> */}
         </StyledColumn>
-        {/* <span style={{ width: "30%" }}>{item.author}</span>
-        <span style={{ width: "10%" }}>{item.num_comments}</span>
-        <span style={{ width: "10%" }}>{item.points}</span>
-        <span style={{ width: "10%" }}>
-          <button type="button" onClick={handleRemoveItem} className={`${styles.button} ${styles.buttonSmall}`}>
-            Dismiss
-          </button>
-        </span> */}
         <StyledColumn width="30%">{item.author}</StyledColumn>
         <StyledColumn width="10%">{item.num_comments}</StyledColumn>
         <StyledColumn width="10%">{item.points}</StyledColumn>
         <StyledColumn width="10%">
-          {/* <button type="button" onClick={handleRemoveItem} className={`${styles.button} ${styles.buttonSmall}`}>
-            Dismiss
-          </button> */}
           <StyledButtonSmall type="button" onClick={handleRemoveItem}>
-            Dismiss
+            {/* Dismiss */}
+            <Check height="18px" width="18px" />
           </StyledButtonSmall>
         </StyledColumn>
-    {/* </div> */}
     </StyledItem>
   )
 }
 
-const InputWithLabel = ({ id, label, value, type = "text", onInputChange, isFocused, children }) => {
+const InputWithLabel = ({ id, value, type = "text", onInputChange, isFocused, children }) => {
   const inputRef = React.useRef()
 
   React.useEffect(() => {
@@ -247,18 +233,8 @@ const InputWithLabel = ({ id, label, value, type = "text", onInputChange, isFocu
 
   return (
     <>
-      {/* <label htmlFor={id} className={styles.label}>{children}</label> */}
       <StyledLabel htmlFor={id}>{children}</StyledLabel>
       &nbsp;
-      {/* <input
-        ref={inputRef}
-        id={id}
-        type={type}
-        value={value}
-        autoFocus={isFocused}
-        onChange={onInputChange}
-        className={styles.input}
-      /> */}
       <StyledInput
         ref={inputRef}
         id={id}
@@ -276,7 +252,6 @@ const SearchForm = ({
   onSearchInput,
   onSearchSubmit
 }) => (
-  // <form onSubmit={onSearchSubmit} className="searchForm">
   <StyledSearchForm onSubmit={onSearchSubmit}>
         <InputWithLabel 
           id="search"
@@ -287,21 +262,12 @@ const SearchForm = ({
           <strong>Search</strong>
         </InputWithLabel>
 
-        {/* <button
-          type="submit"
-          disabled={!searchTerm}
-          // onClick={handleSearchSubmit}
-          className="button buttonLarge"
-        >
-          Submit
-        </button> */}
         <StyledButtonLarge
           type="submit"
           disabled={!searchTerm}
         >
           Submit
         </StyledButtonLarge>
-      {/* </form> */}
       </StyledSearchForm>
 )
 
