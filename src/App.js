@@ -1,6 +1,91 @@
 import React from 'react'
 import axios from 'axios'
-import './App.css';
+import styled from 'styled-components'
+import { ReactComponent as Check } from './check.svg'
+
+const StyledContainer = styled.div`
+    height: 100vw;
+    padding: 20px;
+
+    background: #83a4d4;
+    background: linear-gradient(to left, #b6fbff, #83a4d4);
+
+    color: #171212;
+`
+
+const StyledHeadlinePrimary = styled.h1`
+    font-size: 48px;
+    font-weight: 300;
+    letter-spacing: 2px;
+`
+
+const StyledItem = styled.div`
+    display: flex;
+    align-items: center;
+    padding-bottom: 5px;
+`
+
+const StyledColumn = styled.span`
+    padding: 0 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    a {
+      color: inherit;
+    }
+
+    width: ${props => props.width}
+`
+
+const StyledButton =  styled.button`
+    background: transparent;
+    border: 1px solid #171212;
+    padding: 5px;
+    cursor: pointer;
+
+    transition: all 0s 0.1s ease-in;
+
+    &:hover {
+      background: #171212;
+      color: #FFFFFF;
+
+      svg {
+        g {
+          fill: #FFFFFF;
+          stroke: #FFFFFF;
+        }
+      }
+    }
+`
+
+const StyledButtonSmall = styled(StyledButton)`
+    padding: 5px;
+`
+
+const StyledButtonLarge = styled(StyledButton)`
+    padding: 10px;
+`
+
+const StyledSearchForm = styled.form`
+    padding: 10px 0 20px 0;
+    display: flex;
+    align-items: baseline;
+`
+
+const StyledLabel = styled.label`
+    border-top: 1px solid #171212;
+    border-left: 1px solid #171212;
+    padding-left: 5px;
+    font-size: 24px;
+`
+
+const StyledInput = styled.input`
+    border: none;
+    border-bottom: 1px solid #171212;
+    border-color: transparent;
+    font-size: 24px;
+`
 
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query="
 
@@ -44,8 +129,6 @@ const storiesReducer = (state, action) => {
 const App = () => {
 const [searchTerm, setSearchTerm] = useSemiPersistentState("Search", "React")
 const [stories, dispatchStories] = React.useReducer(storiesReducer, { data: [], isLoading: false, isError: false})
-const [isLoading, setIsLoading] = React.useState(false)
-const [isError, setIsError] = React.useState(false)
 const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`)
 
 const handleFetchStories = React.useCallback(async () => {
@@ -84,10 +167,8 @@ const handleSearchSubmit = event => {
 
   event.preventDefault()
 }
-
-const searchedStories = stories.data.filter(story => story.title.toLowerCase().includes(searchTerm.toLowerCase()))
   return (
-    <div>
+    <StyledContainer>
       <Title />
 
       <SearchForm 
@@ -95,6 +176,7 @@ const searchedStories = stories.data.filter(story => story.title.toLowerCase().i
         onSearchInput={handleSearchInput}
         onSearchSubmit={handleSearchSubmit}
       />
+
       <hr />
 
       {stories.isError && <p>Something went wrong...</p>}
@@ -104,14 +186,13 @@ const searchedStories = stories.data.filter(story => story.title.toLowerCase().i
       ) : (
         <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
-      
-    </div>
+    </StyledContainer>
   );
 }
 
 const Title = () => {
   return (
-    <h1>Hacker Stories</h1>
+    <StyledHeadlinePrimary>Hacker Stories</StyledHeadlinePrimary>
   )
 }
 
@@ -124,23 +205,24 @@ const Item = ({ item, onRemoveItem }) => {
     onRemoveItem(item)
   }
   return (
-    <div>
-        <span>
+    <StyledItem>
+        <StyledColumn width="40%">
           <a href={item.url}>{item.title}</a>
-        </span>
-        <span>{item.author}</span>
-        <span>{item.num_comments}</span>
-        <span>{item.points}</span>
-        <span>
-          <button type="button" onClick={handleRemoveItem}>
-            Dismiss
-          </button>
-        </span>
-    </div>
+        </StyledColumn>
+        <StyledColumn width="30%">{item.author}</StyledColumn>
+        <StyledColumn width="10%">{item.num_comments}</StyledColumn>
+        <StyledColumn width="10%">{item.points}</StyledColumn>
+        <StyledColumn width="10%">
+          <StyledButtonSmall type="button" onClick={handleRemoveItem}>
+            {/* Dismiss */}
+            <Check height="18px" width="18px" />
+          </StyledButtonSmall>
+        </StyledColumn>
+    </StyledItem>
   )
 }
 
-const InputWithLabel = ({ id, label, value, type = "text", onInputChange, isFocused, children }) => {
+const InputWithLabel = ({ id, value, type = "text", onInputChange, isFocused, children }) => {
   const inputRef = React.useRef()
 
   React.useEffect(() => {
@@ -151,9 +233,9 @@ const InputWithLabel = ({ id, label, value, type = "text", onInputChange, isFocu
 
   return (
     <>
-      <label htmlFor={id}>{children}</label>
+      <StyledLabel htmlFor={id}>{children}</StyledLabel>
       &nbsp;
-      <input
+      <StyledInput
         ref={inputRef}
         id={id}
         type={type}
@@ -170,7 +252,7 @@ const SearchForm = ({
   onSearchInput,
   onSearchSubmit
 }) => (
-  <form onSubmit={onSearchSubmit}>
+  <StyledSearchForm onSubmit={onSearchSubmit}>
         <InputWithLabel 
           id="search"
           value={searchTerm}
@@ -180,14 +262,13 @@ const SearchForm = ({
           <strong>Search</strong>
         </InputWithLabel>
 
-        <button
+        <StyledButtonLarge
           type="submit"
           disabled={!searchTerm}
-          // onClick={handleSearchSubmit}
         >
           Submit
-        </button>
-      </form>
+        </StyledButtonLarge>
+      </StyledSearchForm>
 )
 
 export default App;
